@@ -1,4 +1,4 @@
-import { connection } from "../database.js";
+import connection from '../databases/postgres';
 
 export interface Company {
   id: number;
@@ -8,6 +8,7 @@ export interface Company {
 
 export async function findByApiKey(apiKey: string) {
   const result = await connection.query<Company, [string]>(
+    // eslint-disable-next-line quotes
     `SELECT * FROM companies WHERE "apiKey"=$1`,
     [apiKey]
   );

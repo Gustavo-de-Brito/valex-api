@@ -1,7 +1,12 @@
 import * as companyRepository from '../repositories/companyRepository';
+import * as employeeRepository from '../repositories/employeeRepository';
+import * as cardRepository from '../repositories/cardRepository';
+import { faker } from '@faker-js/faker';
+import dayjs from 'dayjs';
+import Cryptr from 'cryptr';
 
-async function isApiKeyValid(xApiKey: any) {
-  const company = await companyRepository.findByApiKey(xApiKey);
+async function isApiKeyValid(companyApiKey: any) {
+  const company:object = await companyRepository.findByApiKey(companyApiKey);
 
   if(!company) {
     const error = {
@@ -11,12 +16,69 @@ async function isApiKeyValid(xApiKey: any) {
 
     throw error;
   }
-
+  
   return company;
 }
 
-async function addCard(employeeId: number, cardType: string, xApiKey: any) {
-  const company: object = await isApiKeyValid(xApiKey);
+async function isEmployeeValid(employeeId: number) {
+  const employee:object = await employeeRepository.findById(employeeId);
+  
+  if(!employee) {
+    const error = {
+      code: 'NotFound',
+      message: 'O empregado não foi encontrado'
+    };
+    
+    throw error;
+  }
+
+  return employee;
+}
+
+async function employeeAlreadyHasCartType(employeeId: number, cardType: any) {
+  const card: object = await cardRepository
+  .findByTypeAndEmployeeId(cardType, employeeId);
+
+  if(card) {
+    const error = {
+      code: 'Conflict',
+      message: 'O empregado já possui um cartão desse tipo'
+    };
+
+    throw error;
+  }
+}
+
+function generateEmployeeCardName(employee: any):string {
+  const names = employee.fullName.split(' ');
+  let cardName: string = names[0];
+
+  for(let i = 1; i < (names.length - 1); i++) {
+    if(names[i].length >= 3) cardName += ` ${names[i][0]}`;
+  }
+
+  cardName += ` ${names[names.length - 1]}`;
+
+  return cardName;
+}
+
+async function addCard(employeeId: number, cardType: string, companyApiKey: any) {
+  
+  const company: object = await isApiKeyValid(companyApiKey);
+  const employee: object = await isEmployeeValid(employeeId);
+  await employeeAlreadyHasCartType(employeeId, cardType);
+  
+  const cardNumber: string = faker.finance.creditCardNumber();
+
+  const cryptr = new Cryptr('mentolado');
+  const codeCvc: string = faker.finance.creditCardCVV();
+  const encryptCodeCvC = cryptr.encrypt(codeCvc);
+
+  const cardEmployeeName: string = generateEmployeeCardName( employee );
+
+  // get current date and add 5 years in the specified format
+  const dueDate = dayjs().add(5, 'years').format('MM/YY');
+
 }
 
 export default addCard;

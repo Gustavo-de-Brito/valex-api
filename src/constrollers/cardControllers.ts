@@ -3,10 +3,10 @@ import addCard from '../service/addCard';
 
 export async function createCard(req: Request, res: Response) {
   const { employeeId, cardType } = req.body;
-  const xApiKey = req.headers['x-api-key'];
+  const companyApiKey = req.headers['x-api-key'];
 
   try {
-    await addCard(employeeId, cardType, xApiKey);
+    await addCard(employeeId, cardType, companyApiKey);
 
     res.sendStatus(503);
   } catch(err: any) {

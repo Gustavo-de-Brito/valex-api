@@ -4,7 +4,7 @@ const createCardSchema = joi.object(
   {
     employeeId: joi.number().required(),
     cardType: joi.string()
-    .valid('groceries', 'restaurants', 'transport', 'education', 'health')
+    .valid('groceries', 'restaurant', 'transport', 'education', 'health')
     .required()
   }
 );

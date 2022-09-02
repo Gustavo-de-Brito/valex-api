@@ -15,3 +15,11 @@ export async function createCard(req: Request, res: Response) {
     res.sendStatus(500);
   }
 }
+
+export async function activeCard(req: Request, res: Response) {
+  try{
+    res.sendStatus(503);
+  } catch(err) {
+    res.sendStatus(500);
+  }
+}

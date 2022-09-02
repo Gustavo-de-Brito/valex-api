@@ -1,4 +1,8 @@
-export function mapObjectToUpdateQuery({ object = {}, offset = 1 }) {
+export function mapObjectToUpdateQuery(
+  { object, offset = 1 }
+  :
+  {object: any, offset: number}
+  ) {
   const objectColumns = Object.keys(object)
     .map((key, index) => `"${key}"=$${index + offset}`)
     .join(',');

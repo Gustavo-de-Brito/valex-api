@@ -1,9 +1,12 @@
-import * as companyRepository from '../repositories/companyRepository';
-import * as employeeRepository from '../repositories/employeeRepository';
-import * as cardRepository from '../repositories/cardRepository';
 import { faker } from '@faker-js/faker';
 import dayjs from 'dayjs';
 import Cryptr from 'cryptr';
+import dotenv from 'dotenv';
+import * as companyRepository from '../repositories/companyRepository';
+import * as employeeRepository from '../repositories/employeeRepository';
+import * as cardRepository from '../repositories/cardRepository';
+
+dotenv.config();
 
 async function isApiKeyValid(companyApiKey: any) {
   const company:object = await companyRepository.findByApiKey(companyApiKey);
@@ -62,23 +65,45 @@ function generateEmployeeCardName(employee: any):string {
   return cardName;
 }
 
-async function addCard(employeeId: number, cardType: string, companyApiKey: any) {
-  
-  const company: object = await isApiKeyValid(companyApiKey);
+function generateEncryptedCodeCvc(): string {
+  const CRYPTR_KEY:string = process.env.CRYPTR_KEY ?? '';
+  const cryptr = new Cryptr(CRYPTR_KEY);
+  const codeCvc: string = faker.finance.creditCardCVV();
+  const encryptCodeCvC: string = cryptr.encrypt(codeCvc);
+
+  return encryptCodeCvC;
+}
+
+async function addCard(
+  employeeId: number,
+  cardType: string,
+  isVirtual: boolean,
+  companyApiKey: any
+  ) {
+  // validate company and employee data before create card
+  await isApiKeyValid(companyApiKey);
   const employee: object = await isEmployeeValid(employeeId);
   await employeeAlreadyHasCartType(employeeId, cardType);
   
   const cardNumber: string = faker.finance.creditCardNumber();
-
-  const cryptr = new Cryptr('mentolado');
-  const codeCvc: string = faker.finance.creditCardCVV();
-  const encryptCodeCvC = cryptr.encrypt(codeCvc);
-
+  const encryptCodeCvC: string = generateEncryptedCodeCvc();
   const cardEmployeeName: string = generateEmployeeCardName( employee );
 
   // get current date and add 5 years in the specified format
-  const dueDate = dayjs().add(5, 'years').format('MM/YY');
+  const expirationDate = dayjs().add(5, 'years').format('MM/YY');
 
+  const cardData = {
+    employeeId,
+    number: cardNumber,
+    cardholderName: cardEmployeeName,
+    securityCode: encryptCodeCvC,
+    expirationDate,
+    isVirtual,
+    isBlocked: false,
+    type: cardType
+  };
+
+  await cardRepository.insert(cardData);
 }
 
 export default addCard;

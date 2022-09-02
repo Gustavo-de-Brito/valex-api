@@ -67,7 +67,7 @@ export async function findByCardDetails(
   return result.rows[0];
 }
 
-export async function insert(cardData: CardInsertData) {
+export async function insert(cardData: any) {
   const {
     employeeId,
     number,

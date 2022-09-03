@@ -1,4 +1,4 @@
-import { connection } from "../database.js";
+import connection from '../databases/postgres';
 
 export interface Recharge {
   id: number;
@@ -6,10 +6,11 @@ export interface Recharge {
   timestamp: Date;
   amount: number;
 }
-export type RechargeInsertData = Omit<Recharge, "id" | "timestamp">;
+export type RechargeInsertData = Omit<Recharge, 'id' | 'timestamp'>;
 
 export async function findByCardId(cardId: number) {
   const result = await connection.query<Recharge, [number]>(
+    // eslint-disable-next-line quotes
     `SELECT * FROM recharges WHERE "cardId"=$1`,
     [cardId]
   );
@@ -21,6 +22,7 @@ export async function insert(rechargeData: RechargeInsertData) {
   const { cardId, amount } = rechargeData;
 
   connection.query<any, [number, number]>(
+    // eslint-disable-next-line quotes
     `INSERT INTO recharges ("cardId", amount) VALUES ($1, $2)`,
     [cardId, amount]
   );

@@ -2,7 +2,7 @@ import joi from 'joi';
 
 const rechargeCardSchema = joi.object(
   {
-    rechargeAmount: joi.number().min(1).required()
+    rechargeAmount: joi.number().integer().min(1).required()
   }
 );
 

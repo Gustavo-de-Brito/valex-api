@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import cardRouter from './cardRouter';
+import creationRouter from './creationRouter';
+import transactionRouter from './transactionsRouter';
 
 const indexRouter = Router();
 
-indexRouter.use(cardRouter);
+indexRouter.use(creationRouter);
+indexRouter.use(transactionRouter);
 
 export default indexRouter;

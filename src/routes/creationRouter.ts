@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createCard, activeCard } from '../constrollers/cardControllers';
+import { createCard, activeCard } from '../constrollers/creationControllers';
 import createCardValidation from '../middleware/createCardValidation';
 import activeCardValidation from '../middleware/activeCardValidation';
 

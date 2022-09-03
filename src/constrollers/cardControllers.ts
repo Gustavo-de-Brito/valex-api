@@ -37,9 +37,11 @@ export async function activeCard(req: Request, res: Response) {
   try{
     await updateCard(cardNumber, codeCvc, cardHolderName, expirationDate, password);
 
-    res.sendStatus(503);
+    res.sendStatus(201);
   } catch(err: any) {
     if(err.code === 'NotFound') return res.status(404).send(err.message);
+    if(err.code === 'Unauthorized') return res.status(401).send(err.message);
+    if(err.code === 'Conflict') return res.status(409).send(err.message);
     res.sendStatus(500);
   }
 }

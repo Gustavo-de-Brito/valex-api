@@ -6,6 +6,6 @@ import activeCardValidation from '../middleware/activeCardValidation';
 const router = Router();
 
 router.post('/create-card', createCardValidation, createCard);
-router.post('/active-card', activeCardValidation, activeCard);
+router.put('/active-card', activeCardValidation, activeCard);
 
 export default router;

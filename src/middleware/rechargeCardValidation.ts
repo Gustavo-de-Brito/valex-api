@@ -4,7 +4,7 @@ import rechargeCardSchema from '../schemas/rechargeCardSchema';
 function rechargeCardValidation(req: Request, res: Response, next: NextFunction) {
   const body = req.body;
 
-  const { error } = rechargeCardSchema.validate(body);
+  const { error } = rechargeCardSchema.validate(body, { abortEarly: false });
 
   if(error) {
     const errors = error.details.map(err => err.message);

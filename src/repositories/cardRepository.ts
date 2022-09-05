@@ -134,7 +134,7 @@ export async function unblockCard(cardId: number) {
   connection.query(
     `
     UPDATE cards
-    SET isBlocked = false
+    SET "isBlocked" = false
     WHERE id = $1;
     `,
     [ cardId ]

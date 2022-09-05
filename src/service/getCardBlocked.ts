@@ -52,6 +52,8 @@ async function getCardBlocked(cardId: number, password: string) {
   isExpirationDateValid(cardData.expirationDate);
   isCardBlocked(cardData.isBlocked);
   isPasswordValid(cardData.password, password);
+
+  await cardRepository.blockCard(cardId);
 }
 
 export default getCardBlocked;

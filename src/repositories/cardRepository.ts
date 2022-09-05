@@ -119,6 +119,28 @@ export async function update(id: number, cardData: CardUpdateData) {
   );
 }
 
+export async function blockCard(cardId: number) {
+  connection.query(
+    `
+    UPDATE cards
+    SET "isBlocked" = true
+    WHERE id = $1;
+    `,
+    [ cardId ]
+  );
+}
+
+export async function unblockCard(cardId: number) {
+  connection.query(
+    `
+    UPDATE cards
+    SET isBlocked = false
+    WHERE id = $1;
+    `,
+    [ cardId ]
+  );
+}
+
 export async function remove(id: number) {
   connection.query<any, [number]>('DELETE FROM cards WHERE id=$1', [id]);
 }

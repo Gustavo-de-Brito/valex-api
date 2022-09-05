@@ -11,6 +11,7 @@ export async function blockCard(req: Request, res: Response) {
   } catch(err:any) {
     if(err.code === 'Unauthorized') return res.status(401).send(err.message);
     else if(err.code === 'Unprocessable') return res.status(422).send(err.message);
+    console.log(err);
 
     res.sendStatus(500);
   }
